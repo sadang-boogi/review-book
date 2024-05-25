@@ -2,6 +2,7 @@ package com.rebook.review.domain;
 
 import com.rebook.book.domain.BookEntity;
 import com.rebook.common.domain.BaseEntity;
+import com.rebook.user.domain.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,8 +30,10 @@ public class ReviewEntity extends BaseEntity {
     @JoinColumn(name = "bookId")
     private BookEntity book;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+    @Comment("리뷰 유저")
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private UserEntity user;
 
     @Comment("리뷰 내용")
     @Column(name = "content", nullable = false)
@@ -40,17 +43,12 @@ public class ReviewEntity extends BaseEntity {
     @Column(name = "score", precision = 3, scale = 2)
     private BigDecimal score;
 
-    public ReviewEntity(Long id, Long userId, String content, BigDecimal score) {
-        this.id = id;
-        this.content = content;
-        this.score = score;
-    }
 
-    public static ReviewEntity of(BookEntity book, Long userId, String content, BigDecimal score) {
+    public static ReviewEntity of(BookEntity book, UserEntity user, String content, BigDecimal score) {
         return new ReviewEntity(
                 null,
                 book,
-                userId,
+                user,
                 content,
                 score);
     }

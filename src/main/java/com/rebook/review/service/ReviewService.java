@@ -9,6 +9,8 @@ import com.rebook.review.repository.ReviewRepository;
 import com.rebook.review.service.command.ReviewSaveCommand;
 import com.rebook.review.service.command.ReviewUpdateCommand;
 import com.rebook.review.service.dto.ReviewDto;
+import com.rebook.user.domain.UserEntity;
+import com.rebook.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,12 +22,15 @@ import java.util.List;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final BookRepository bookRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public ReviewDto save(ReviewSaveCommand reviewCommand, Long userId) {
         BookEntity book = bookRepository.findById(reviewCommand.getBookId())
                 .orElseThrow(() -> new NotFoundException(ExceptionCode.NOT_FOUND_BOOK_ID));
-        ReviewEntity reviewEntity = ReviewEntity.of(book, userId, reviewCommand.getContent(), reviewCommand.getScore());
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ExceptionCode.NOT_FOUND_USER_ID));
+        ReviewEntity reviewEntity = ReviewEntity.of(book, user, reviewCommand.getContent(), reviewCommand.getScore());
         ReviewEntity savedReview = reviewRepository.save(reviewEntity);
         return ReviewDto.fromEntity(savedReview);
     }

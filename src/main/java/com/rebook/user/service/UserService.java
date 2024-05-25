@@ -20,7 +20,7 @@ public class UserService {
         String socialId = userCommand.getSocialId();
         Optional<UserEntity> existingUser = userRepository.findBySocialId(socialId);
 
-        //존재하는 회원일 경우
+        //이전에 소셜 로그인 했던 user인 경우 db user를 불러옴
         if (existingUser.isPresent()) {
             return LoggedInUser.fromEntity(existingUser.get());
         }
