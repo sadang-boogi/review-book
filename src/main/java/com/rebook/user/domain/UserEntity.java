@@ -21,6 +21,9 @@ public class UserEntity extends BaseEntity {
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
+    @Column(name = "password")
+    private String password;
+
     @Column(name = "email", nullable = false)
     private String email;
 
@@ -35,10 +38,11 @@ public class UserEntity extends BaseEntity {
     private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
 
     @Builder
-    public UserEntity(Long id, String nickname, String email, Role role, SocialType socialType, String socialId) {
+    public UserEntity(Long id, String nickname, String email, String password, Role role, SocialType socialType, String socialId) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;
+        this.password = password;
         this.role = role;
         this.socialType = socialType;
         this.socialId = socialId;

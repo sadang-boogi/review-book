@@ -2,8 +2,9 @@ package com.rebook.user.service;
 
 import com.rebook.user.config.OAuthServiceProvider;
 import com.rebook.user.service.dto.LoggedInUser;
-import com.rebook.user.service.dto.UserCommand;
+import com.rebook.user.service.dto.SocialUserCreateCommand;
 import com.rebook.user.util.OAuthService;
+import com.rebook.user.util.SocialUserProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +21,15 @@ public class LoginService {
             throw new IllegalArgumentException("Unsupported registrationId: " + registrationId);
         }
         String accessToken = oauthProvider.getAccessToken(code);
-        UserCommand userCommand = oauthProvider.getUserProfile(accessToken);
-        return userService.createUser(userCommand);
+        SocialUserProfile userProfile = oauthProvider.getUserProfile(accessToken);
+        return userService.createSocialUser(
+                SocialUserCreateCommand.builder()
+                        .email(userProfile.getEmail())
+                        .name(userProfile.getName())
+                        .socialId(userProfile.getSocialId())
+                        .socialType(userProfile.getSocialType())
+                        .build()
+        );
     }
 
     public String getAuthorizationUrl(String registrationId) {
@@ -31,5 +39,4 @@ public class LoginService {
         }
         return oauthProvider.getAuthorizationUrl();
     }
-
 }

@@ -1,7 +1,6 @@
 package com.rebook.user.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.rebook.user.service.dto.UserCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -71,12 +70,12 @@ public class GoogleOAuthService implements OAuthService {
 
 
     @Override
-    public UserCommand getUserProfile(String accessToken) {
+    public SocialUserProfile getUserProfile(String accessToken) {
         JsonNode userResource = getUserResource(accessToken);
         String id = userResource.get("sub").asText();
         String email = userResource.get("email").asText();
         String name = userResource.get("name").asText();
-        return UserCommand.builder()
+        return SocialUserProfile.builder()
                 .name(name)
                 .email(email)
                 .socialId(id)
